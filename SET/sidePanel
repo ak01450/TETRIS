@@ -4,12 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -24,6 +18,7 @@ public class sidePanel extends JPanel implements ActionListener {
 	public static JLabel scoreLabel;
 	private JButton menu;
 	private JButton pause;
+	private JButton restart;
 	private static Color bg = Color.BLACK;
 	private static int HDrows = 4;
 	private static int HDcols = 4;
@@ -36,17 +31,20 @@ public class sidePanel extends JPanel implements ActionListener {
 		scoreLabel = new JLabel("SCORE: 0");
 		menu = new JButton("MENU (m)");
 		pause = new JButton("PAUSE (p)");
+		restart = new JButton("RESTART (r)");
 		menu.addActionListener(this);
 		pause.addActionListener(this);
+		restart.addActionListener(this);
 		menu.setFocusable(false);
 		pause.setFocusable(false);
-		initializeSideDim(40);
+		restart.setFocusable(false);
+		initializeSideDim(30);
 		
 	}
 	
 	public void initializeSideDim(int strut)
 	{
-		this.setPreferredSize(new Dimension(100, 400));
+		this.setPreferredSize(new Dimension(120, 400));
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setOpaque(true);
 		this.add(Box.createVerticalStrut(strut));
@@ -64,6 +62,8 @@ public class sidePanel extends JPanel implements ActionListener {
 		pause.setAlignmentX(Component.CENTER_ALIGNMENT);
 		this.add(pause);
 		this.add(Box.createVerticalStrut(strut));
+		restart.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.add(restart);
 	}
 	
 	public void holdDisplayGrid(Color bg)
@@ -81,7 +81,6 @@ public class sidePanel extends JPanel implements ActionListener {
 				holdDisplay.add(holdTiles[i][j]);
 			}
 		}
-		this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
 		holdDisplay.setBackground(Color.BLACK);
 		holdDisplay.setPreferredSize(new Dimension (80, 80));
 		holdDisplay.setMinimumSize(new Dimension(80, 80));
@@ -126,13 +125,23 @@ public class sidePanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("MENU (m)"))
 		{
-			System.out.println("open menu window");
+			if (!mainPanel.paused)
+			{
+				if (mainPanel.rulesOpen)
+					Rules.rulesFrame.dispose();
+				else
+					mainPanel.toggleMenu();	
+			}	
 		}
 		
 		if(e.getActionCommand().equals("PAUSE (p)"))
 		{
 			Tetris.main.pauseGame();
-			//System.out.println("paused");
+		}
+		
+		if(e.getActionCommand().equals("RESTART (r)"))
+		{
+			Tetris.main.resetGame();
 		}
 	}
 
