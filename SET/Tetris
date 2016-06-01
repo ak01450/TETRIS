@@ -15,7 +15,7 @@ import java.awt.FlowLayout;
 import java.awt.BorderLayout; 
 import java.util.Random;
 
-public class Tetris extends JPanel 
+public class Tetris
 {
 	//added serial # to remove error, lightbulb over class declaration line?
 	private static final long serialVersionUID = -3006798671524080331L;
@@ -26,14 +26,12 @@ public class Tetris extends JPanel
 	  
 	public Tetris()
 	{
-		setOpaque(true);
 		this.initializeFrameDim(550, 600, 50, 50);
 		this.setBackgroundColor(Color.BLACK);
 	}
 	
 	public Tetris(int w, int l, int h, int v, Color c) 
 	{
-		setOpaque(true);
 		this.initializeFrameDim(w, l, h, v);
 		this.setBackgroundColor(c);
 	}
