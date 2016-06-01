@@ -1,0 +1,57 @@
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import javax.swing.*;
+
+public class Rules {
+		
+	public static JFrame rulesFrame;
+	public static mainPanel panel;
+	public static JTextArea rulesContent = new JTextArea();
+		
+	public Rules()
+	{
+		this.initializeFrameDim(550, 200, 50, 50);
+	}
+		
+	public void initializeFrameDim(int frameW, int frameL, int hgap, int vgap)
+	{
+		rulesFrame = new JFrame("RULES");
+		rulesFrame.setSize(frameW, frameL);
+		rulesFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		panel = new mainPanel();
+		Container contentPane = rulesFrame.getContentPane();
+		rulesFrame.setContentPane(rulesContent);
+		contentPane.setLayout(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
+		
+		//position rulesFrame in center of screen when it runs
+		rulesFrame.setLocationRelativeTo(null);
+		rulesFrame.setResizable(false);
+		rulesFrame.setVisible(true);
+		rulesFrame.requestFocusInWindow();
+		rulesFrame.addKeyListener((KeyListener) panel);
+		
+		
+		rulesFrame.addWindowListener(new java.awt.event.WindowAdapter() 
+		{
+	        public void windowClosed(java.awt.event.WindowEvent e) 
+	        {
+	        	mainPanel.toggleMenu();
+	        	mainPanel.timer.restart();
+	        }
+	        
+	    });	
+
+	}
+		
+	public void setRules()
+	{
+		rulesContent.setText(" Rules: \n Rotate the pieces using the arrow keys. Fill up every space in a row to clear it. Everytime you clear\n a line your score goes up by one point. In addition to the arrow keys, the shift key is used to store\n the current tetrad that you are maneuvering. Pressing the shift key again will switch the tetrad you\n had stored with the one that you're maneuvering. Be warned, you can only shift once per piece.\n Press P to pause the game, R to restart the game, and M to show the rules.\n\n Press M to resume the game\n\n HAVE FUN!!! :D");
+		rulesContent.setEditable(false);
+		rulesContent.setVisible(true);
+	}
+
+}
