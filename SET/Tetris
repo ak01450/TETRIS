@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowListener;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
@@ -20,13 +21,13 @@ public class Tetris
 	//added serial # to remove error, lightbulb over class declaration line?
 	private static final long serialVersionUID = -3006798671524080331L;
 	
-	public JFrame frame;
+	public static JFrame frame;
 	public static mainPanel main;
 	public sidePanel side;
 	  
 	public Tetris()
 	{
-		this.initializeFrameDim(550, 600, 50, 50);
+		this.initializeFrameDim(570, 600, 50, 50);
 		this.setBackgroundColor(Color.BLACK);
 	}
 	
@@ -47,7 +48,6 @@ public class Tetris
 		main.setGridBorder(3, 3);
 		main.initializePanelDim(300, 450);
 		main.setManualBorder(20, 20, 20, 20, Color.BLUE);
-		//frame.pack();
 		
 		Container contentPane = frame.getContentPane();
 		frame.setContentPane(contentPane);
