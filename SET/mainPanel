@@ -1,20 +1,17 @@
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
-
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class mainPanel extends JPanel implements KeyListener, ActionListener {
+
+public class mainPanel extends JPanel implements ActionListener, KeyListener {
 	public static final int DEFAULT_ROWS = 15;
 	public static final int DEFAULT_COLS = 10;
 	public static final Color DEFAULT_TILE_COLOR = Color.WHITE;
@@ -29,14 +26,15 @@ public class mainPanel extends JPanel implements KeyListener, ActionListener {
 	private Color fallingPieceColor;
 	private int fallingPieceRow;
 	private int fallingPieceCol;
-	private Timer timer;
+	public static Timer timer;
 	private int timerDelay;
 	private boolean isGameOver = false;
-	private boolean paused = false;
+	public static boolean paused = false;
 	public static boolean[][] holdPiece = null;
 	public static Color holdPieceColor;
 	public static int score;
 	private boolean hasShifted = false;
+	public static boolean rulesOpen = false;
 	
 	//Seven "standard" pieces (tetrominoes)
 	  private static final boolean[][] I_PIECE = {
@@ -341,7 +339,7 @@ public class mainPanel extends JPanel implements KeyListener, ActionListener {
 		//must override KeyListener interface 
 		public void keyPressed(KeyEvent e)
 		{
-			if (!isGameOver && !paused)
+			if (!isGameOver && !paused && !rulesOpen)
 			{
 				if (e.getKeyCode() == KeyEvent.VK_LEFT)
 					moveFallingPiece(0, -1);
@@ -376,10 +374,21 @@ public class mainPanel extends JPanel implements KeyListener, ActionListener {
 				resetGame();	
 			}
 			
-			//press p to pause, key code 80
-			if (e.getKeyCode() == 80)
+			if (e.getKeyCode() == KeyEvent.VK_M)
 			{
-				pauseGame();
+				if (!paused)
+				{
+					if (mainPanel.rulesOpen)
+						Rules.rulesFrame.dispose();
+					else
+						mainPanel.toggleMenu();
+				}
+			}
+			
+			if (e.getKeyCode() == KeyEvent.VK_P)
+			{
+				if (!isGameOver)
+					pauseGame();
 			}
 			
 		}	
@@ -394,6 +403,21 @@ public class mainPanel extends JPanel implements KeyListener, ActionListener {
 		public void keyTyped(KeyEvent e)
 		{
 			
+		}
+		
+		public static void toggleMenu()
+		{
+			rulesOpen = !rulesOpen;
+			if (rulesOpen)
+			{	
+				timer.stop();
+				Rules r = new Rules();
+				r.setRules();
+			}
+			else 
+			{
+				timer.restart();
+			}	
 		}
 		
 		//gradually increase event handling (every 3, 2, 1, etc..)
@@ -531,45 +555,48 @@ public class mainPanel extends JPanel implements KeyListener, ActionListener {
 		
 		public void pauseGame()
 		{
-			paused = !paused;
-			if (paused)
-			{	
-				timer.stop();
-				Color p = Color.PINK;
-				Color r = Color.RED;
-				Color o = Color.ORANGE;
-				Color y = Color.YELLOW;
-				Color g = Color.GREEN;
-				Color c = Color.CYAN;
-				Color b = Color.BLACK;
-				Color[][] pauseScreen = 
-						{{b,b,b,b,b,b,b,b,b,b},
-						{b,p,p,p,b,b,r,r,r,b},
-						{b,p,b,p,b,b,r,b,r,b},
-						{b,p,p,p,b,b,r,r,r,b},
-						{b,p,b,b,b,b,r,b,r,b},
-						{b,b,b,b,b,b,b,b,b,b},
-						{b,o,b,o,b,b,y,y,y,b},
-						{b,o,b,o,b,b,y,y,b,b},
-						{b,o,o,o,b,y,y,y,b,b},
-						{b,b,b,b,b,b,b,b,b,b},
-						{b,g,g,g,b,b,c,c,b,b},
-						{b,g,b,b,b,b,c,b,c,b},
-						{b,g,g,g,b,b,c,b,c,b},
-						{b,g,b,b,b,b,c,b,c,b},
-						{b,g,g,g,b,b,c,c,b,b}};
-				for (int i = 0; i < rows; i++)
-				{
-					for (int j = 0; j < cols; j++)
+			if (!rulesOpen)
+			{
+				paused = !paused;
+				if (paused)
+				{	
+					timer.stop();
+					Color p = Color.PINK;
+					Color r = Color.RED;
+					Color o = Color.ORANGE;
+					Color y = Color.YELLOW;
+					Color g = Color.GREEN;
+					Color c = Color.CYAN;
+					Color b = Color.BLACK;
+					Color[][] pauseScreen = 
+							{{b,b,b,b,b,b,b,b,b,b},
+							{b,p,p,p,b,b,r,r,r,b},
+							{b,p,b,p,b,b,r,b,r,b},
+							{b,p,p,p,b,b,r,r,r,b},
+							{b,p,b,b,b,b,r,b,r,b},
+							{b,b,b,b,b,b,b,b,b,b},
+							{b,o,b,o,b,b,y,y,y,b},
+							{b,o,b,o,b,b,y,y,b,b},
+							{b,o,o,o,b,y,y,y,b,b},
+							{b,b,b,b,b,b,b,b,b,b},
+							{b,g,g,g,b,b,c,c,b,b},
+							{b,g,b,b,b,b,c,b,c,b},
+							{b,g,g,g,b,b,c,b,c,b},
+							{b,g,b,b,b,b,c,b,c,b},
+							{b,g,g,g,b,b,c,c,b,b}};
+					for (int i = 0; i < rows; i++)
 					{
-						tiles[i][j].setBackground(pauseScreen[i][j]);
+						for (int j = 0; j < cols; j++)
+						{
+							tiles[i][j].setBackground(pauseScreen[i][j]);
+						}
 					}
 				}
-			}
-			else 
-			{
-				timer.restart();
-				paintBoard();
+				else 
+				{
+					timer.restart();
+					paintBoard();
+				}
 			}
 		}
 }
