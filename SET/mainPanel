@@ -364,6 +364,8 @@ public class mainPanel extends JPanel implements KeyListener, ActionListener {
 				if (e.getKeyCode() == KeyEvent.VK_SHIFT)
 				{
 					holdFallingPiece();
+					sidePanel.resetBackgroundColor();
+					sidePanel.paintHoldPiece();
 				}
 				
 			}
